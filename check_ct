@@ -11,7 +11,7 @@ def page_is_loaded(driver):
     return driver.find_element_by_tag_name("body") != None
 
 driver = webdriver.PhantomJS(executable_path=r'/usr/local/bin/phantomjs', service_log_path='ghostdriver.log')
-driver.get("http://clinicaltrialss.us-east-1.elasticbeanstalk.com/api/trials/statusfilters/")
+driver.get("http://clinicaltrials.us-east-1.elasticbeanstalk.com/api/trials/statusfilters/")
 wait = ui.WebDriverWait(driver, 3)
 wait.until(page_is_loaded)
 
