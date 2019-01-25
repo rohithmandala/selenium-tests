@@ -16,6 +16,8 @@ driver.get("http://clinicaltrials.us-east-1.elasticbeanstalk.com/api/trials/stat
 wait = ui.WebDriverWait(driver, 3)
 wait.until(page_is_loaded)
 
+print(driver.page_source)
+
 if 'Current Status Filter Settings' in driver.page_source:
     print ("Clinical Trials up and running")
     sys.exit(0)
