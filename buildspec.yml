@@ -31,6 +31,7 @@ phases:
   build:
     commands:
       - cd ~
+      - which chromedriver
 #      - export PHANTOM_JS="phantomjs-1.9.8-linux-x86_64"
 #      - wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2
 #      - tar xvjf $PHANTOM_JS.tar.bz2
@@ -39,5 +40,4 @@ phases:
 #      - func_name=`echo $CODEBUILD_BUILD_ID | awk -F ':' '{print $1}'`-phantomjs
 #      - export PhantomJSFunction=$func_name
 #      - which phantomjs
-       - which chromedrive
 #      - python /codebuild/readonly/src/check_ct_test
