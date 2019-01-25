@@ -1,0 +1,17 @@
+#!/usr/bin/python
+
+import time
+from selenium import webdriver
+import sys
+
+driver = webdriver.Chrome('/usr/local/bin/chromedriver')  # Optional argument, if not specified will search path.
+driver.get('http://clinicaltrials.us-east-1.elasticbeanstalk.com/api/trials/statusfilters/');
+time.sleep(5) # Let the user actually see something!
+
+if 'Current Status Filter Settings' in driver.page_source:
+    print ("Clinical Trials up and running")
+    sys.exit(0)
+else:
+    raise Exception('Clinicaltrials is down')
+
+driver.quit()
