@@ -1,0 +1,22 @@
+#!/usr/bin/python
+
+from selenium import webdriver
+from selenium.webdriver.support import ui
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
+import sys
+import signal
+
+def page_is_loaded(driver):
+    return driver.find_element_by_tag_name("body") != None
+
+driver = webdriver.PhantomJS(executable_path=r'/usr/local/bin/phantomjs', service_log_path='ghostdriver.log')
+driver.get("http://clinicaltrialstest.us-east-1.elasticbeanstalk.com/api/trials/statusfilters/")
+wait = ui.WebDriverWait(driver, 3)
+wait.until(page_is_loaded)
+
+if 'Active, not recruiting' in driver.page_source:
+    print ("Clinical Trials up and running")
+    sys.exit(0)
+else:
+    raise Exception('Clinicaltrials is down')
