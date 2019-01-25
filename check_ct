@@ -15,7 +15,7 @@ driver.get("http://clinicaltrialstest.us-east-1.elasticbeanstalk.com/api/trials/
 wait = ui.WebDriverWait(driver, 3)
 wait.until(page_is_loaded)
 
-if 'Active, not recruiting' in driver.page_source:
+if 'Current Status Filter Settings' in driver.page_source:
     print ("Clinical Trials up and running")
     sys.exit(0)
 else:
