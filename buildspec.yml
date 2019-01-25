@@ -35,6 +35,7 @@ phases:
       - mv -f chromedriver /usr/local/share/chromedriver
       - ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
       - ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
+      - which chromedriver
       - python /codebuild/readonly/src/check_ct_test
 #      - export PHANTOM_JS="phantomjs-1.9.8-linux-x86_64"
 #      - wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2

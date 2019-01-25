@@ -4,7 +4,11 @@ import time
 from selenium import webdriver
 import sys
 
-driver = webdriver.Chrome(executable_path=r"/usr/local/bin/chromedriver")  # Optional argument, if not specified will search path.
+chrome_options.setBinary("/usr/local/bin/chromedriver")
+chrome_driver_binary = "/usr/local/bin/chromedriver"
+driver = webdriver.Chrome(chrome_driver_binary, chrome_options=options)
+
+#driver = webdriver.Chrome(executable_path=r"/usr/local/bin/chromedriver")  # Optional argument, if not specified will search path.
 driver.get('http://clinicaltrials.us-east-1.elasticbeanstalk.com/api/trials/statusfilters/');
 time.sleep(5) # Let the user actually see something!
 
