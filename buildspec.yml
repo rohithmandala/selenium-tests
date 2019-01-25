@@ -39,4 +39,5 @@ phases:
 #      - func_name=`echo $CODEBUILD_BUILD_ID | awk -F ':' '{print $1}'`-phantomjs
 #      - export PhantomJSFunction=$func_name
 #      - which phantomjs
-      - python /codebuild/readonly/src/check_ct_test
+       - which chromedrive
+#      - python /codebuild/readonly/src/check_ct_test
