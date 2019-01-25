@@ -26,11 +26,16 @@ phases:
       - pip install awscli
       - pip install requests
       - pip install boto3
-      - pip install chromedriver-install
       - updatedb
   build:
     commands:
       - cd ~
+      - wget -N http://chromedriver.storage.googleapis.com/2.26/chromedriver_linux64.zip
+      - unzip chromedriver_linux64.zip
+      - chmod +x chromedriver
+      - mv -f chromedriver /usr/local/share/chromedriver
+      - ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+      - ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
       - which chromedriver
 #      - export PHANTOM_JS="phantomjs-1.9.8-linux-x86_64"
 #      - wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2
