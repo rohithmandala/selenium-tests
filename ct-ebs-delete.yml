@@ -1,0 +1,15 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: False
+  
+  tasks:
+
+    - name: Delete Elastic Beanstalk EC2 instance
+      elasticbeanstalk_env:
+        app_name: ClinicalTrials-RMANDA2-Ansible
+        env_name: "ct-api-test"
+        state: absent
+        wait_timeout: 360
+        region: us-east-1

@@ -6,17 +6,25 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 import sys
 import signal
+import subprocess
+import json
 
 def page_is_loaded(driver):
     return driver.find_element_by_tag_name("body") != None
 
+eb_execution = subprocess.Popen(["aws elasticbeanstalk describe-environments --environment-names ct-api-test"], stdout=subprocess.PIPE, shell=True)
+eb_execution_output = eb_execution.communicate()[0].replace('\n','')
+json_object = json.loads(eb_execution_output)
+eb_url = json_object['Environments'][0]['CNAME']
+ct_eb_url = "http://%s/api/trials/statusfilters/" %eb_url
+
 driver = webdriver.PhantomJS(executable_path=r'/usr/local/bin/phantomjs', service_log_path='ghostdriver.log')
-driver.get("http://CtTest-env.cfxp6zaciu.us-east-1.elasticbeanstalk.com/api/trials/statusfilters/")
+driver.get(ct_eb_url)
 wait = ui.WebDriverWait(driver, 3)
 wait.until(page_is_loaded)
 
-if 'Current Status Filter Settings' in driver.page_source:
-    print ("Clinical Trials up and running")
+if 'Active, not recruiting' in driver.page_source:
+    print ("Clinical Trials up and running....!!!!")
     sys.exit(0)
 else:
-    raise Exception('Clinicaltrials is down')
+    raise Exception('Clinicaltrials is down....!!!!')

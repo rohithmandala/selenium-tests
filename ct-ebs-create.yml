@@ -1,0 +1,86 @@
+---
+- name: Deploy clinicalTrials API in the AWS Elastic Beanstalk space
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+    - name: Create and/or register Elastic Beanstalk application
+      elasticbeanstalk_app:
+        region: us-east-1
+        app_name: ClinicalTrials-RMANDA2-Ansible
+        description: "API Deploy to tomcat"
+        state: present
+      register: app
+      #https://s3.amazonaws.com/test-rmanda2-ct/test-rmanda2-ct/target/clinicalTrials.war
+
+    - name:  Set application version-this determines which S3 bucket .zip file to build website from
+      elasticbeanstalk_version:
+        app_name: ClinicalTrials-RMANDA2-Ansible
+        version_label: v2.0
+        description: 2nd Version
+        s3_bucket: test-rmanda2-ct
+        s3_key: test-rmanda2-ct/target/clinicalTrials.war
+        region: us-east-1
+      register: version
+
+    - name: Create EB EC2, this step takes a few minutes because the ec2 is being generated
+      elasticbeanstalk_env:
+        region: us-east-1
+        state: present
+        app_name: ClinicalTrials-RMANDA2-Ansible
+        env_name: ct-api-test
+        version_label: v2.0
+        solution_stack_name: "64bit Amazon Linux 2018.03 v3.0.7 running Tomcat 8.5 Java 8"
+        option_settings:
+          ####################Auto scaling configuration##########################
+          - Namespace: aws:autoscaling:launchconfiguration
+            OptionName: IamInstanceProfile
+            Value: aws-elasticbeanstalk-ec2-role
+          - Namespace: aws:autoscaling:launchconfiguration
+            OptionName: EC2KeyName
+            Value: rmanda2-key-pair
+          - Namespace: aws:autoscaling:launchconfiguration
+            OptionName: InstanceType
+            Value: t2.micro
+          - Namespace: aws:autoscaling:launchconfiguration
+            OptionName: SecurityGroups
+            Value: sg-0f64c801505a4648b
+          - Namespace: aws:elb:loadbalancer
+            OptionName: ManagedSecurityGroup
+            Value: sg-0f64c801505a4648b
+          - Namespace: aws:elb:loadbalancer
+            OptionName: SecurityGroups
+            Value: sg-0f64c801505a4648b
+          - Namespace: aws:autoscaling:launchconfiguration
+            OptionName: ImageId
+            Value: ami-046d0589c885f3ec8
+          - Namespace: aws:autoscaling:asg
+            OptionName: MinSize
+            Value: "1"
+          - Namespace: aws:autoscaling:asg
+            OptionName: MaxSize
+            Value: "1"
+          ######################Network configuration########################
+          - Namespace: aws:ec2:vpc
+            OptionName: VPCId
+            Value: vpc-806318fb
+          - Namespace: aws:ec2:vpc
+            OptionName: Subnets
+            Value: subnet-52d47718,subnet-5a051a07
+          - Namespace: aws:ec2:vpc
+            OptionName: ELBSubnets
+            Value: subnet-52d47718,subnet-5a051a07
+          - Namespace: aws:ec2:vpc
+            OptionName: ELBScheme
+            Value: internal
+          #######################Tomcat configuration#######################
+          - Namespace: aws:elasticbeanstalk:container:tomcat:jvmoptions
+            OptionName: Xms
+            Value: 512m
+          - Namespace: aws:elasticbeanstalk:container:tomcat:jvmoptions
+            OptionName: Xmx
+            Value: 512m
+          - Namespace: aws:elasticbeanstalk:container:tomcat:jvmoptions
+            OptionName: JVM Options
+            Value: -Xmn128m

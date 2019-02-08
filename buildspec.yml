@@ -20,23 +20,17 @@ phases:
       - apt-get install -y libfreetype6 libfreetype6-dev
       - apt-get install -y libfontconfig1 libfontconfig1-dev
       - apt-get install zip unzip -y
-      - apt-get install -y libglib2.0-0 libnss3 libgconf-2-4 libfontconfig1
+      - apt-get install mlocate -y
       - pip install --upgrade pip
       - pip install selenium
       - pip install awscli
       - pip install requests
       - pip install boto3
+      - pip install ansible
+      - updatedb
   build:
     commands:
       - cd ~
-#      - wget -N http://chromedriver.storage.googleapis.com/2.26/chromedriver_linux64.zip
-#      - unzip chromedriver_linux64.zip
-#      - chmod +x chromedriver
-#      - mv -f chromedriver /usr/local/share/chromedriver
-#      - ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-#      - ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
-#      - which chromedriver
-#      - python /codebuild/readonly/src/check_ct_test
       - export PHANTOM_JS="phantomjs-1.9.8-linux-x86_64"
       - wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2
       - tar xvjf $PHANTOM_JS.tar.bz2
@@ -45,4 +39,6 @@ phases:
       - func_name=`echo $CODEBUILD_BUILD_ID | awk -F ':' '{print $1}'`-phantomjs
       - export PhantomJSFunction=$func_name
       - which phantomjs
+      - ansible-playbook /codebuild/readonly/src/ct-ebs-create.yml
       - python /codebuild/readonly/src/check_ct
+      - ansible-playbook /codebuild/readonly/src/ct-ebs-delete.yml
